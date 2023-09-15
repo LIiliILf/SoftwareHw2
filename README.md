@@ -1,0 +1,3 @@
+安装必要的beautifulSoup、requests等等
+
+在开始的savePath自定义保存路径即可运行。
