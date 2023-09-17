@@ -3,17 +3,20 @@ from bs4 import BeautifulSoup
 import re
 import urllib.parse
 import os
-from tkinter import Tk, Label, StringVar, ttk, Button, Entry, Text
+from tkinter import ttk, Button, Text
 import tkinter as tk
 
 baseurl = "https://www.luogu.com.cn/problem/P"
-savePath = "F:\problems\\"
+savePath = "F:\problem\\"
 blogurl = "https://www.luogu.com.cn/blog/_post/"
 listurl = "https://www.luogu.com.cn/problem/list"
 solutionurl = "https://www.luogu.com.cn/problem/solution/P"
-minn = 1000    #开始题号
-maxn = 1010    # 结束题号
+minNum = 1000  # 开始题号
+maxNum = 1050  # 结束题号
 
+
+# 实现爬取1000-1050题的题目和题解，保存为md文件，
+# 但是时间较久 可以在gui界面中设置开始题号和结束题号设置成数量少一点的会快一点
 
 # 模拟用户访问浏览器
 def get_html(url):
@@ -70,18 +73,11 @@ def get_solutionMD(html):
     md = re.sub("</p>", "<br>", md)
     return md
 
-
+# 实际上文件夹不存在会报错
 # 生成文件夹
 def born_file(name):
     if not os.path.exists(name):
         os.mkdir(name)
-
-
-# 获取题目关键词
-def slice(t_list, key_list):
-    if t_list[0] == "[":
-        key_list.append(t_list[1:5] + t_list[10:13])
-        key_list.append(t_list[5:9])
 
 
 # 获取标题列表
@@ -128,21 +124,17 @@ def saveData(data, filename):
     file.close()
 
 
-def on_select(event):
-    selected_item = event.widget.get()
-    print(f"Selected item: {selected_item}")
-
-
 def crawl():
-    global minn, maxn
-    minn = int(min_entry.get())
-    maxn = int(max_entry.get())
-    print("爬取到P{}".format(maxn))
+    global minNum, maxNum
+    minNum = int(min_entry.get())
+    maxNum = int(max_entry.get())
+    print("开始从P{}爬取".format(minNum))
+    print("爬取到P{}".format(maxNum))
     t_list = []
     get_titles(listurl, t_list)
     dif_list = get_dif(listurl)
 
-    for i in range(minn, maxn + 1):
+    for i in range(minNum, maxNum + 1):
         print("正在爬取P{}...".format(i), end="")
         text_output.insert(tk.END, "正在爬取P" + str(i) + "\n")
         key_list = []
@@ -174,11 +166,8 @@ def crawl():
             solution_path = os.path.join(folder_path, solution_filename)
             saveData(solution, solution_path)
 
-            print("保存成功!")
-            text_output.insert(tk.END, "保存成功!" + "\n")
-
-
-# ...
+            print("保存成功!请在自定义的savePath中查看")
+            text_output.insert(tk.END, "保存成功" + "\n")
 
 
 # Create the main window
